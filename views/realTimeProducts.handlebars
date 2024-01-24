@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Productos</title>
+</head>
+<body>
+    <h1>Lista de Productos</h1>
+
+    <ul>
+        {{#each productos}}
+            <li>
+                {{this.Titulo}} - {{this.Descripcion}} - Precio: ${{this.Precio}} - Código: {{this.Codigo}} - Cantidad: {{this.Cantidad}}
+                <button onclick="addToCart('{{this.Codigo}}')">Agregar al Carrito</button>
+            </li>
+        {{/each}}
+    </ul>
+
+    <a href="/realTimeProducts">
+            <button>Ver Productos en Tiempo Real</button>
+        </a>
+        <a href="./carrito">
+            <button>Ver carrito</button>
+        </a>
+        <a href="/">
+            <button>volver a lista estática</button>
+        </a>
+        <a href="/logout">
+            <button>Cerrar sesion</button>
+        </a>
+        <button onclick="createCart()">Crear Carrito</button>
+    </main>
+
+    <script>
+        function addToCart(productCode) {
+            fetch(`http://localhost:8080/api/carts/1/product/${productCode}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se encontro un carrito');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Producto agregado al carrito:', data);
+                alert('Producto agregado al carrito!');
+            })
+            .catch(error => {
+                console.error('Error al agregar el producto al carrito:', error);
+                alert('Error al agregar el producto al carrito');
+            });
+        }
+    </script>
+    <script>
+       function createCart() {
+    const accessToken = "user";
+    fetch('http://localhost:8080/api/carts', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al crear el carrito');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Carrito creado:', data);
+        alert('Carrito creado!');
+    })
+    .catch(error => {
+        console.error('Error al crear el carrito:', error);
+        alert('Error al crear el carrito');
+    });
+}
+
+</script>
+</body>
+</html>
+
+
+
+<!--{{this.Titulo}} - {{this.Descripcion}} - Precio: ${{this.Precio}} - Código: {{this.Codigo}} - Cantidad: {{this.Cantidad}}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carrito de Compras</title>
+    <style>
+    </style>
+    <script>
+        const Carrito = require('../carrito');
+        
+        function addToCart(productCode) {
+            fetch(`http://localhost:8080/api/carts/1/product/${productCode}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se encontro un carrito');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Producto agregado al carrito:', data);
+                alert('Producto agregado al carrito!');
+            })
+            .catch(error => {
+                console.error('Error al agregar el producto al carrito:', error);
+                alert('Error al agregar el producto al carrito');
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Carrito de Compras</h1>
+    <ul>
+        {{#if productosCarrito.length}}
+            {{#each productosCarrito}}
+                <li>
+                    {{this.Titulo}} - Cantidad: {{this.Cantidad}}
+                    <form action="/carrito/{{../cartId}}/delete/{{this._id}}" method="POST">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </li>
+            {{/each}}
+        {{else}}
+            <p>El carrito está vacío</p>
+        {{/if}}
+    </ul>
+</body>
+</html>
+
+
+
